@@ -1,0 +1,210 @@
+{
+  "menu": [
+    {
+      "url": "about",
+      "name": "abouts",
+      "icon": "menu-icon tf-icons bx bx-info-circle",
+      "slug": "about",
+      "badge": [
+        "danger",
+        "8"
+      ],
+      "submenu": [
+        {
+          "url": "about",
+          "name": "About",
+          "slug": "about"
+        },
+        {
+          "url": "contract",
+          "name": "How it works",
+          "slug": "about"
+        },
+        {
+          "url": "technology",
+          "name": "Technology",
+          "slug": "technology"
+        },
+        {
+          "url": "category",
+          "name": "category",
+          "slug": "about"
+        },
+        {
+          "url": "client_rights",
+          "name": "Using Agreement",
+          "slug": "about"
+        },
+        {
+          "url": "payment_methods",
+          "name": "Payment Methods",
+          "slug": "about"
+        },
+        {
+          "url": "portfolios",
+          "name": "portfolio",
+          "slug": "about"
+        },
+        {
+          "url": "methodologies",
+          "name": "Methodologies",
+          "icon": "menu-icon tf-icons bx bx-check-square",
+          "slug": "methodologies"
+        }
+      ]
+    },
+    {
+      "url": "dashboard/website-service",
+      "name": "Services",
+      "icon": "menu-icon tf-icons bx bx-info-circle",
+      "slug": "dashboard-service",
+      "badge": [
+        "success",
+        "9"
+      ],
+      "submenu": [
+        {
+          "url": "dashboard/website-service",
+          "name": "Website Service",
+          "slug": "dashboard-website-service"
+        },
+        {
+          "url": "dashboard/ecommerce-service",
+          "name": "Ecommerce Service",
+          "slug": "dashboard-ecommerce-service"
+        },
+        {
+          "url": "dashboard/marketing-service",
+          "name": "Marketing Service",
+          "slug": "dashboard-marketing-service"
+        },
+        {
+          "url": "dashboard/motion-graphic-service",
+          "name": "Motion Graphic Service",
+          "slug": "dashboard-motion-graphic-service"
+        },
+        {
+          "url": "dashboard/app-service",
+          "name": "App Service",
+          "slug": "dashboard-app-service"
+        },
+        {
+          "url": "dashboard/esystem-service",
+          "name": "Esystem Service",
+          "slug": "dashboard-esystem-service"
+        },
+        {
+          "url": "dashboard/business-identity-service",
+          "name": "Business Identity Service",
+          "slug": "dashboard-business-identity-service"
+        },
+        {
+          "url": "dashboard/technical-support-service",
+          "name": "Technical Support Service",
+          "slug": "dashboard-technical-support-service"
+        },
+        {
+          "url": "email-service",
+          "name": "Email Service",
+          "slug": "email-service"
+        }
+      ]
+    },
+    {
+      "url": "infos",
+      "name": "Info",
+      "icon": "menu-icon tf-icons bx  bx-info-circle",
+      "slug": "infos"
+    },
+    {
+      "url": "contact-groups",
+      "name": "Contacts",
+      "icon": "menu-icon tf-icons bx  bx-info-circle",
+      "slug": "contact-groups"
+    },
+    {
+      "url": "online-meet",
+      "name": "Online Meet",
+      "icon": "menu-icon tf-icons bx bx-video",
+      "slug": "online-meet"
+    },
+    {
+      "url": "agent-visit",
+      "name": "Agent Visit",
+      "icon": "menu-icon tf-icons bx bx-map",
+      "slug": "agent-visit"
+    },
+    {
+      "url": "price-offer",
+      "name": "Price Offer",
+      "icon": "menu-icon tf-icons bx bx-dollar",
+      "slug": "price-offer"
+    },
+    {
+      "url": "question",
+      "name": "Question",
+      "icon": "menu-icon tf-icons bx bx-question-mark",
+      "slug": "question"
+    },
+    {
+      "url": "complaints",
+      "name": "Complaints",
+      "icon": "menu-icon tf-icons bx bx-comment",
+      "slug": "complaints"
+    },
+    {
+      "url": "blogs",
+      "name": "blogs",
+      "icon": "menu-icon tf-icons bx bx-book",
+      "slug": "blogs"
+    },
+    {
+      "url": "blog-types",
+      "name": "Blog Types",
+      "icon": "menu-icon tf-icons bx bx-book",
+      "slug": "blog-types"
+    },
+    {
+      "url": "clients",
+      "name": "Clients",
+      "icon": "menu-icon tf-icons bx bx-user",
+      "slug": "clients"
+    },
+    {
+      "url": "partners",
+      "name": "Partners",
+      "icon": "menu-icon tf-icons bx bx-user",
+      "slug": "partners"
+    },
+    {
+      "url": "works",
+      "name": "Our Works",
+      "icon": "menu-icon tf-icons bx bx-briefcase",
+      "slug": "works"
+    },
+    {
+      "url": "faqs",
+      "name": "faqs",
+      "icon": "menu-icon tf-icons bx bx-help-circle",
+      "slug": "faqs"
+    },
+    {
+      "url": "consults",
+      "name": "consults",
+      "icon": "menu-icon tf-icons bx bx-help-circle",
+      "slug": "consults"
+    },
+    {
+      "url": "projects",
+      "name": "projects",
+      "icon": "menu-icon tf-icons bx bx-help-circle",
+      "slug": "projects"
+    },
+    {
+      "url": "project-options",
+      "name": "project-options",
+      "icon": "menu-icon tf-icons bx bx-help-circle",
+      "slug": "project-options"
+    }
+  ]
+}

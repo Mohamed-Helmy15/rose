@@ -1,0 +1,10 @@
+<script src="https://rosehills.sa/catalog/view/theme/journal3/lib/anime/anime.min.js?v=185b08f7"></script>
+    <script src="https://rosehills.sa/catalog/view/theme/journal3/lib/vanilla-lazyload/lazyload.min.js?v=185b08f7"></script>
+    <script src="https://rosehills.sa/catalog/view/theme/journal3/lib/countdown/jquery.countdown.min.js?v=185b08f7"></script>
+    <script src="https://rosehills.sa/catalog/view/theme/journal3/lib/typeahead/typeahead.jquery.min.js?v=185b08f7"></script>
+    <script src="https://rosehills.sa/catalog/view/theme/journal3/lib/hoverintent/jquery.hoverIntent.min.js?v=185b08f7"></script>
+    <script src="https://rosehills.sa/catalog/view/theme/journal3/lib/cjs/cjs.js?v=185b08f7"></script>
+    <script src="https://rosehills.sa/catalog/view/theme/journal3/lib/masterslider/masterslider.js?v=185b08f7"></script>
+    <script src="https://rosehills.sa/catalog/view/theme/journal3/lib/swiper/swiper.min.js?v=185b08f7"></script>
+    <script src="https://rosehills.sa/catalog/view/theme/journal3/js/common.js?v=185b08f7"></script>
+    <script src="https://rosehills.sa/catalog/view/theme/journal3/js/journal.js?v=185b08f7"></script>

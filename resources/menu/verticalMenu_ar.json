@@ -1,0 +1,142 @@
+{
+  "menu": [
+    {
+      "url": "users",
+      "name": "المستخدمين",
+      "icon": "menu-icon tf-icons bx bx-user",
+      "slug": "users"
+    },
+    {
+      "url": "roles",
+      "name": "الأدوار",
+      "icon": "menu-icon tf-icons bx bx-shield-quarter",
+      "slug": "roles"
+    },
+    {
+      "url": "permissions",
+      "name": "الصلاحيات",
+      "icon": "menu-icon tf-icons bx bx-lock-open-alt",
+      "slug": "permissions"
+    },
+
+    {
+      "url": "shipping/governates",
+      "name": "الشحن",
+      "icon": "menu-icon tf-icons bx bx-info-circle",
+      "slug": "shipping",
+      "badge": [
+        "danger",
+        "4"
+      ],
+      "submenu": [
+        {
+          "url": "shipping/governates",
+          "name": "المحافظات",
+          "slug": "shipping-governates"
+        },
+        {
+          "url": "shipping/cities",
+          "name": "المدن",
+          "slug": "shipping-cities"
+        },
+        {
+          "url": "shipping/locations",
+          "name": "مواقع الشحن",
+          "slug": "shipping-locations"
+        },
+        {
+          "url": "shipping/rates",
+          "name": "تعريف أسعار الشحن",
+          "slug": "shipping-rates"
+        }
+      ]
+    },
+
+    {
+      "url": "notifications",
+      "name": "الاشعارات",
+      "icon": "menu-icon tf-icons bx bx-bell",
+      "slug": "notifications"
+    },
+
+    {
+      "url": "branches",
+      "name": "الفروع",
+      "icon": "menu-icon tf-icons bx bx-git-branch",
+      "slug": "branches"
+    },
+
+    {
+      "url": "categories",
+      "name": "التصنيفات",
+      "icon": "menu-icon tf-icons bx bx-category",
+      "slug": "categories"
+    },
+
+    {
+      "url": "products",
+      "name": "المنتجات",
+      "icon": "menu-icon tf-icons bx bx-box",
+      "slug": "products"
+    },
+
+    {
+      "url": "orders",
+      "name": "الطلبات",
+      "icon": "menu-icon tf-icons bx bx-receipt",
+      "slug": "orders",
+      "badge": [
+        "danger",
+        "3"
+      ],
+      "submenu": [
+        {
+          "url": "pos",
+          "name": "نقطة البيع",
+          "slug": "pos"
+        },
+        {
+          "url": "orders",
+          "name": "إدارة الطلبات",
+          "slug": "orders-index"
+        },
+        {
+          "url": "commissions/report",
+          "name": "تقرير العمولات",
+          "slug": "commissions-report"
+        }
+      ]
+    },
+    {
+      "url": "suppliers",
+      "name": "الموردين",
+      "icon": "menu-icon tf-icons bx bx-user",
+      "slug": "suppliers"
+    },
+    {
+      "url": "purchase-orders",
+      "name": "أوامر الشراء",
+      "icon": "menu-icon tf-icons bx bx-cart",
+      "slug": "purchase-orders"
+    },
+    {
+      "url": "goods-received-notes",
+      "name": "إيصالات استلام البضائع",
+      "icon": "menu-icon tf-icons bx bx-package",
+      "slug": "goods-received-notes"
+    },
+    {
+      "url": "supplier-evaluations",
+      "name": "تقييمات الموردين",
+      "icon": "menu-icon tf-icons bx bx-star",
+      "slug": "supplier-evaluations"
+    },
+
+    {
+      "url": "settings",
+      "name": "الإعدادات",
+      "icon": "menu-icon tf-icons bx bx-cog",
+      "slug": "settings"
+    }
+  ]
+}
