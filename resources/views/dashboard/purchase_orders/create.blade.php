@@ -203,14 +203,14 @@
                 productIndex++;
             });
 
-            document.querySelectorAll('.product-select').forEach(select => {
-                select.addEventListener('change', (e) => {
-                    const price = e.target.options[e.target.selectedIndex].dataset.price;
+            document.getElementById('products-container').addEventListener('change', (e) => {
+                if (e.target.classList.contains('product-select')) {
+                    const price = e.target.options[e.target.selectedIndex].dataset.price || '';
                     e.target.closest('.row').querySelector('.price').value = price;
-                });
+                }
             });
 
-            document.addEventListener('click', (e) => {
+            document.getElementById('products-container').addEventListener('click', (e) => {
                 if (e.target.closest('.remove-product')) {
                     e.target.closest('.product-row').remove();
                 }

@@ -201,6 +201,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('suppliers', SupplierController::class);
     Route::resource('purchase-orders', PurchaseOrderController::class);
     Route::resource('goods-received-notes', GoodsReceivedNoteController::class);
+    Route::get('/goods-received-notes/po/{id}/items', [GoodsReceivedNoteController::class, 'getPurchaseOrderItems'])
+        ->name('goods-received-notes.po.items');
     Route::resource('supplier-evaluations', SupplierEvaluationController::class);
     Route::get('purchase-orders/{purchase_order}/products', [PurchaseOrderController::class, 'getProducts'])->name('purchase_orders.products');
     // Route::get('purchase-orders/{purchaseOrder}/receive', [GoodsReceivedNoteController::class, 'create'])->name('goods-received-notes.create');
@@ -211,6 +213,12 @@ Route::middleware(['auth'])->group(function () {
         // روتس إضافية للحركات، باتشات، إلخ (يمكن توسيع)
         Route::get('/batches', [InventoryController::class, 'batches'])->name('batches'); // قائمة دفعات
         Route::get('/pick-lists', [InventoryController::class, 'pickLists'])->name('pick-lists'); // قوائم انتقاء
+        Route::post('/pick-lists/{pickList}/prepare', [InventoryController::class, 'prepare'])
+            ->name('pickLists.prepare');
+
+        // إكمال التجهيز
+        Route::post('/pick-lists/{pickList}/complete', [InventoryController::class, 'complete'])
+            ->name('pickLists.complete');
         Route::get('/deliveries', [InventoryController::class, 'deliveries'])->name('deliveries'); // توصيلات
 
         Route::get('/', [InventoryController::class, 'index'])->name('index');
@@ -223,8 +231,9 @@ Route::middleware(['auth'])->group(function () {
 
     });
 
+
     Route::get('/invoice', function () {
-        return view('invoices.a4');
+        dd(auth()->user()->primaryBranch()?->warehouse);
     });
 
 

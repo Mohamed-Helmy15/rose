@@ -3,20 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Inventory extends Model
 {
-    use SoftDeletes;
-
     protected $table = 'inventory';
 
-    protected $fillable = [
-        'product_id',
-        'warehouse_id',
-    ];
+    protected $fillable = ['product_id', 'warehouse_id'];
 
     public function product(): BelongsTo
     {
@@ -28,25 +21,24 @@ class Inventory extends Model
         return $this->belongsTo(Warehouse::class);
     }
 
-    public function batches(): HasMany
+    /**
+     * احسب الكمية الحالية من الباتشات الصالحة لهذا المنتج في هذا المخزن
+     */
+    public function getCurrentQuantityAttribute(): int
     {
-        return $this->hasMany(Batch::class);
+        return \App\Models\Batch::where('product_id', $this->product_id)
+            ->where('warehouse_id', $this->warehouse_id)
+            ->where('quantity', '>', 0)
+            ->where('expiry_date', '>=', now())
+            ->sum('quantity');
     }
 
-    public function stockMovements(): HasMany
+    /**
+     * هل الكمية منخفضة؟
+     */
+    public function getIsLowStockAttribute(): bool
     {
-        return $this->hasMany(StockMovement::class);
-    }
-
-    // الكمية الحالية من الباتشات
-    public function getQuantityAttribute()
-    {
-        return $this->batches()->sum('quantity');
-    }
-
-    public function isLowStock(): bool
-    {
-        $reorder = $this->product?->reorder_level ?? 10;
-        return $this->getQuantityAttribute() <= $reorder;
+        $reorderLevel = $this->product?->reorder_level ?? 10;
+        return $this->current_quantity <= $reorderLevel;
     }
 }

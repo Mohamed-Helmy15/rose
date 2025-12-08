@@ -10,6 +10,7 @@ use App\Models\PickList;
 use App\Models\Delivery;
 use App\Models\Product;
 use App\Models\Branch;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -19,14 +20,28 @@ class InventoryController extends Controller
 
     public function index()
     {
-        $warehouses = Warehouse::with(['inventory.product', 'branch'])
+        $warehouses = Warehouse::with(['branch', 'inventory.product'])
             ->when(settings('multi_branch') && !auth()->user()->hasRole('admin'), function ($q) {
                 return $q->whereHas('branch.employees', fn($query) => $query->where('user_id', auth()->id()));
             })
+            ->active()
             ->latest()
             ->get();
 
-        return view('dashboard.inventory.index', compact('warehouses'));
+        // نحسب الإحصائيات بعد الـ load
+        $totalLowStock = 0;
+        $totalQuantity = 0;
+
+        foreach ($warehouses as $warehouse) {
+            foreach ($warehouse->inventory as $item) {
+                if ($item->is_low_stock) {
+                    $totalLowStock++;
+                }
+                $totalQuantity += $item->current_quantity;
+            }
+        }
+
+        return view('dashboard.inventory.index', compact('warehouses', 'totalLowStock', 'totalQuantity'));
     }
 
     public function create()
@@ -125,7 +140,71 @@ class InventoryController extends Controller
     public function pickLists()
     {
         $pickLists = PickList::with(['order', 'preparedBy'])->latest()->get();
+        // dd($pickLists);
         return view('dashboard.inventory.pick-lists', compact('pickLists'));
+    }
+
+    public function prepare(PickList $pickList)
+    {
+        if ($pickList->status !== 'pending') {
+            return back()->with('toast', [
+                'type' => 'error',
+                'message' => 'لا يمكن بدء تجهيز قائمة تم البدء فيها مسبقًا'
+            ]);
+        }
+
+        DB::transaction(function () use ($pickList) {
+            $pickList->update([
+                'status' => 'prepared',
+                'prepared_by' => auth()->id(),
+            ]);
+
+            $order = $pickList->order;
+            if ($order->status === 'new' || $order->status === 'preparing') {
+                $order->update(['status' => 'ready']);
+            }
+
+            $this->logActivity('picklist_preparing', "بدأ تجهيز قائمة الانتقاء للطلب #{$pickList->order->order_number}");
+        });
+
+        return back()->with('toast', [
+            'type' => 'success',
+            'message' => 'تم بدء تجهيز القائمة بنجاح'
+        ]);
+    }
+
+    public function complete(PickList $pickList)
+    {
+        if ($pickList->status !== 'prepared') {
+            return back()->with('toast', [
+                'type' => 'error',
+                'message' => 'لا يمكن إكمال قائمة لم يتم البدء في تجهيزها'
+            ]);
+        }
+
+        DB::transaction(function () use ($pickList) {
+            $pickList->update([
+                'status' => 'ready',
+            ]);
+
+            $order = $pickList->order;
+            if ($order->status === 'ready') {
+                $order->update(['status' => 'delivered']);
+            }
+
+            foreach ($pickList->items as $item) {
+                $item->update([
+                    'picked_quantity' => $item->required_quantity,
+                ]);
+            }
+
+            $this->logActivity('picklist_completed', "تم إكمال تجهيز قائمة الانتقاء للطلب #{$order->order_number}");
+        });
+
+        return back()->with('toast', [
+            'type' => 'success',
+            'message' => 'تم إكمال تجهيز القائمة وهي جاهزة للتسليم'
+        ]);
     }
 
     public function deliveries()

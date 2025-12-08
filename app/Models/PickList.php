@@ -9,15 +9,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PickList extends Model
 {
-    use SoftDeletes;
 
     protected $fillable = [
         'order_id', 'status', 'notes', 'prepared_by'
     ];
 
-    protected $casts = [
-        'items' => 'array', // هنحافظ عليه مؤقتاً للتوافق، لكن مش هنستخدمه بعد كده
-    ];
 
     public function order(): BelongsTo
     {

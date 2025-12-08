@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StockMovement extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
         'product_id', 'batch_id', 'warehouse_id', 'type', 'quantity', 'reason', 'order_id', 'purchase_order_id', 'user_id'
     ];
@@ -46,12 +48,13 @@ class StockMovement extends Model
         parent::boot();
 
         static::created(function ($movement) {
+            // dd('StockMovement created:', $movement->toArray());
             $inventory = Inventory::firstOrCreate([
                 'product_id' => $movement->product_id,
                 'warehouse_id' => $movement->warehouse_id,
             ]);
 
-            $inventory->updateQuantity($movement->quantity, $movement->type);
+            // $inventory->updateQuantity($movement->quantity, $movement->type);
 
             // إذا FEFO, اختر batch تلقائياً للخروج
             if (settings('inventory_method') === 'FEFO' && $movement->type === 'out' && !$movement->batch_id) {

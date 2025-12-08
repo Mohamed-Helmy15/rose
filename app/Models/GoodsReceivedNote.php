@@ -39,6 +39,7 @@ class GoodsReceivedNote extends Model
             ->withPivot('quantity', 'quality_status', 'lot_number', 'expiry_date');
     }
 
+
     // دالة جديدة: إنشاء Batches تلقائياً
     public function createBatchesFromItems($warehouse_id)
     {

@@ -49,7 +49,7 @@ class Batch extends Model
         return $this->hasMany(StockMovement::class);
     }
 
-    public function isExpired(): bool
+    public function isExpired()
     {
         return $this->expiry_date?->isPast() && $this->status !== 'expired';
     }
@@ -57,7 +57,9 @@ class Batch extends Model
     public function scopeAvailable($query)
     {
         return $query->where('quantity', '>', 0)
-                     ->where('status', 'available');
+            ->where('quantity', '>', 0)
+            ->where('status', 'available')
+            ->where('expiry_date', '>=', now());
     }
 
     public function scopeNearExpiry($query, $days = 7)

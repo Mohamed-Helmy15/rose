@@ -62,9 +62,25 @@ class Product extends Model
             $query->where('warehouse_id', $warehouse_id);
         }
         return $query->sum('quantity');
+
     }
 
-    // جلب الباتشات المتاحة حسب FEFO
+    public static function lowStockCount()
+    {
+        $count = 0;
+        $products = Product::active()->get();
+            foreach ($products as $product) {
+                if ($product->getAvailableQuantityAttribute() <= $product->reorder_level) {
+                    $count++;
+                }
+            }
+        return $count;
+        
+    }
+
+
+
+
     public function availableBatches($warehouse_id)
     {
         return $this->batches()
@@ -74,13 +90,58 @@ class Product extends Model
             ->get();
     }
 
-    public function priceWithTax(): float
+    // public function priceWithTax(): float
+    // {
+    //     $vat = settings('vat_rate', 0) / 100;
+    //     $inclusive = settings('vat_inclusive', false);
+
+    //     return $inclusive ? $this->price : $this->price * (1 + $vat);
+    // }
+    public function priceWithTax()
+    {
+        return $this->price;
+    }
+
+    public function priceBeforeTax()
     {
         $vat = settings('vat_rate', 0) / 100;
         $inclusive = settings('vat_inclusive', false);
 
-        return $inclusive ? $this->price : $this->price * (1 + $vat);
+        // لو السعر شامل الضريبة
+        if ($inclusive) {
+            return $vat > 0 ? $this->price / (1 + $vat) : $this->price;
+        }
+
+        // لو السعر غير شامل الضريبة
+        return $this->price;
     }
+
+    public function taxAmount()
+    {
+        $vat = settings('vat_rate', 0) / 100;
+        $inclusive = settings('vat_inclusive', false);
+
+        if ($inclusive) {
+            // لو السعر شامل → الضريبة = السعر - قبل الضريبة
+            return $this->price - $this->priceBeforeTax();
+        }
+
+        // لو السعر غير شامل → الضريبة = السعر × الضريبة
+        return $this->price * $vat;
+    }
+
+    public function finalPrice()
+    {
+        $vat = settings('vat_rate', 0) / 100;
+        $inclusive = settings('vat_inclusive', false);
+
+        return $inclusive
+            ? $this->price          // السعر شامل بالفعل
+            : $this->price * (1 + $vat); // إضافة الضريبة لو غير شامل
+    }
+
+
+
 
     public function scopeActive($query)
     {

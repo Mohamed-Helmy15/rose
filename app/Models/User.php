@@ -18,7 +18,6 @@ class User extends Authenticatable
         'phone',
         'password',
         'role',
-        'branch_id',
         'is_active',
     ];
 
@@ -34,7 +33,7 @@ class User extends Authenticatable
 
     public function branches()
     {
-        return $this->belongsToMany(Branch::class, 'branch_user');
+        return $this->belongsToMany(Branch::class, 'branch_user', 'user_id', 'branch_id');
     }
 
     public function inBranch($branchId)

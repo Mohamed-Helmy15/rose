@@ -1,113 +1,103 @@
+{{-- resources/views/dashboard/inventory/show.blade.php --}}
 @extends('layouts/contentNavbarLayout')
 
-@section('title', 'تفاصيل المخزن - زهور')
+@section('title', 'تفاصيل المخزن - {{ $warehouse->name }}')
 
 @section('page-style')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 <style>
-    :root {
-        --primary: #4361ee;
-        --danger: #f72585;
-        --success: #4cc9f0;
-    }
-
-    .card {
-        border-radius: 15px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-    }
-    .section-content {
+    .info-box {
         background: #f8f9fa;
-        padding: 15px;
-        border-radius: 10px;
-        transition: background 0.3s ease;
+        padding: 1.5rem;
+        border-radius: 12px;
+        border: 1px solid #eee;
     }
-    .section-content:hover {
-        background: #e9ecef;
-    }
-    .product-image-large {
-        width: 100%;
-        max-height: 400px;
-        object-fit: cover;
-        border-radius: 16px;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-    }
-    .action-buttons {
+    .warehouse-icon {
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #4361ee, #5e7bff);
+        color: white;
+        font-size: 4rem;
         display: flex;
-        justify-content: flex-end;
-        gap: 10px;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
     }
+    .badge-low { background: #dc2626; }
 </style>
 @endsection
 
 @section('content')
 <div class="container-fluid animate__animated animate__fadeIn">
-    <h4 class="py-3 mb-4 animate__animated animate__fadeInDown">
+    <h4 class="py-3 mb-4">
         <span class="text-muted fw-light">المخازن /</span> {{ $warehouse->name }}
     </h4>
 
-    <div class="card animate__animated animate__zoomIn">
-        <h5 class="card-header">{{ $warehouse->name }}</h5>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-lg-5 text-center mb-4">
-                    <div class="product-image-large d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, var(--primary)20, var(--primary)80);">
-                        <i class='bx bxs-warehouse' style="font-size: 6rem; color: white;"></i>
-                    </div>
-                </div>
+    <div class="card shadow-lg animate__animated animate__zoomIn">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">{{ $warehouse->name }}</h5>
+            <span class="badge {{ $warehouse->is_active ? 'bg-light text-success' : 'bg-dark' }} fs-6">
+                {{ $warehouse->is_active ? 'نشط' : 'معطل' }}
+            </span>
+        </div>
 
-                <div class="col-lg-7">
-                    <div class="row">
-                        <div class="col-md-6 mb-3 animate__animated animate__fadeInLeft">
-                            <div class="section-content">
-                                <h6 class="section-title">الكمية الإجمالية</h6>
-                                <p class="fs-4 fw-bold text-primary">{{ $warehouse->inventory->sum('quantity') }} قطعة</p>
+        <div class="card-body">
+            <div class="py-4 row align-items-center">
+                
+
+                <div class="col-lg-9">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="info-box">
+                                <h6 class="text-muted">إجمالي الكمية في المخزن</h6>
+                                <p class="fs-2 fw-bold text-primary">{{ number_format($warehouse->total_quantity) }}</p>
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3 animate__animated animate__fadeInRight">
-                            <div class="section-content">
-                                <h6 class="section-title">منتجات منخفضة</h6>
-                                <p class="{{ $warehouse->inventory->where('quantity', '<=', 'min_stock_level')->count() > 0 ? 'text-danger' : 'text-success' }} fs-4 fw-bold">
-                                    {{ $warehouse->inventory->where('quantity', '<=', 'min_stock_level')->count() }}
+                        <div class="col-md-6">
+                            <div class="info-box">
+                                <h6 class="text-muted">منتجات منخفضة المخزون</h6>
+                                <p class="fs-2 fw-bold {{ $warehouse->low_stock_count > 0 ? 'text-danger' : 'text-success' }}">
+                                    {{ $warehouse->low_stock_count }}
+                                    @if($warehouse->low_stock_count > 0)
+                                        <i class='bx bx-bell bx-tada'></i>
+                                    @endif
                                 </p>
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3 animate__animated animate__fadeInLeft">
-                            <div class="section-content">
-                                <h6 class="section-title">نوع المخزن</h6>
-                                <p>{{ $warehouse->is_refrigerated ? 'مبرد (فريش)' : 'جاف (هدايا)' }}</p>
+                        <div class="col-md-6">
+                            <div class="info-box">
+                                <h6 class="text-muted">الفرع</h6>
+                                <p class="fw-bold">{{ $warehouse->branch?->name ?? 'غير محدد' }}</p>
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3 animate__animated animate__fadeInRight">
-                            <div class="section-content">
-                                <h6 class="section-title">الحالة</h6>
-                                <p>{{ $warehouse->is_active ? 'نشط' : 'معطل' }}</p>
-                            </div>
-                        </div>
-                        <div class="col-12 mb-3 animate__animated animate__fadeInUp">
-                            <div class="section-content">
-                                <h6 class="section-title">العنوان</h6>
-                                <p>{{ $warehouse->address ?? 'لا عنوان' }}</p>
+                        <div class="col-md-6">
+                            <div class="info-box">
+                                <h6 class="text-muted">العنوان</h6>
+                                <p>{{ $warehouse->address ?: 'غير محدد' }}</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="mt-4">
-                <a href="{{ route('inventory.movements') }}" class="btn btn-info me-2">عرض الحركات</a>
-                <a href="{{ route('inventory.batches') }}" class="btn btn-warning me-2">عرض الدفعات</a>
-                <a href="{{ route('inventory.pick-lists') }}" class="btn btn-secondary me-2">قوائم الانتقاء</a>
-                <a href="{{ route('inventory.deliveries') }}" class="btn btn-success">التوصيلات</a>
+            <hr class="my-5">
+
+            <div class="d-flex flex-wrap gap-3">
+                <a href="{{ route('inventory.movements') }}" class="btn btn-info">
+                    <i class='bx bx-transfer'></i> حركات المخزون
+                </a>
+                <a href="{{ route('inventory.batches') }}" class="btn btn-warning">
+                    <i class='bx bx-package'></i> الدفعات (Batches)
+                </a>
+                <a href="{{ route('inventory.pick-lists') }}" class="btn btn-success">
+                    <i class='bx bx-list-check'></i> قوائم التحضير
+                </a>
             </div>
 
-            <div class="action-buttons mt-4">
-                <a href="{{ route('inventory.index') }}" class="btn btn-secondary animate__animated animate__pulse">عودة</a>
-                <a href="{{ route('inventory.edit', $warehouse) }}" class="btn btn-primary animate__animated animate__pulse">تعديل</a>
+            <div class="mt-4 text-end">
+                <a href="{{ route('inventory.index') }}" class="btn btn-secondary me-2">رجوع</a>
+                <a href="{{ route('inventory.edit', $warehouse) }}" class="btn btn-primary">تعديل المخزن</a>
             </div>
         </div>
     </div>

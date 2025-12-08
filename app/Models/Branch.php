@@ -5,9 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Branch extends Model
 {
+
+    use SoftDeletes;
     protected $fillable = [
         'name', 'code', 'manager_id', 'phone', 'address',
         'latitude', 'longitude', 'is_active'

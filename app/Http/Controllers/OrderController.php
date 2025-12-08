@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\Delivery;
 use App\Models\Order;
-use App\Models\OrderItem;
 use App\Models\PickList;
 use App\Models\Commission;
 use App\Models\StockMovement;
@@ -45,7 +44,7 @@ class OrderController extends Controller
 
     private function createOrder($data)
     {
-        $branch    = auth()->user()->primaryBranch();
+        $branch = auth()->user()->primaryBranch();
         $warehouse = $branch?->warehouse;
 
         if (!$warehouse) {
@@ -54,11 +53,11 @@ class OrderController extends Controller
 
         return DB::transaction(function () use ($data, $warehouse, $branch) {
             $lineItems = [];
-            $subtotal  = 0;
+            $subtotal = 0;
 
             foreach ($data['items'] as $itemData) {
                 $product = \App\Models\Product::findOrFail($itemData['product_id']);
-                $needed  = (int) $itemData['quantity'];
+                $needed = (int) $itemData['quantity'];
 
                 $batches = $product->availableBatches($warehouse->id);
                 $available = $batches->sum('quantity');
@@ -67,7 +66,7 @@ class OrderController extends Controller
                     return back()->with('toast', ['type' => 'error', 'message' => "الكمية غير متوفرة لـ {$product->name} (متوفر: {$available})"]);
                 }
 
-                $price     = $product->priceWithTax();
+                $price = $product->priceWithTax();
                 $lineTotal = $price * $needed;
                 $subtotal += $lineTotal;
 
@@ -75,44 +74,44 @@ class OrderController extends Controller
 
                 $lineItems[] = [
                     'product_id' => $product->id,
-                    'quantity'   => $needed,
-                    'price'      => $price,
-                    'total'      => $lineTotal,
-                    'batches'    => $allocatedBatches,
+                    'quantity' => $needed,
+                    'price' => $price,
+                    'total' => $lineTotal,
+                    'batches' => $allocatedBatches,
                 ];
             }
 
-            $tax   = $subtotal * (settings('vat_rate', 0) / 100);
+            $tax = $subtotal * (settings('vat_rate', 0) / 100);
             $total = $subtotal + $tax + ($data['shipping'] ?? 0) - ($data['discount'] ?? 0);
 
             $customer = $this->getOrCreateCustomer($data);
 
             $order = Order::create([
-                'order_number'     => 'ORD-' . str_pad(Order::max('id') + 1, 6, '0', STR_PAD_LEFT),
-                'customer_id'      => $customer->id,
-                'customer_name'    => $data['customer_name'],
-                'customer_phone'   => $data['customer_phone'],
+                'order_number' => 'ORD-' . str_pad(Order::max('id') + 1, 6, '0', STR_PAD_LEFT),
+                'customer_id' => $customer->id,
+                'customer_name' => $data['customer_name'],
+                'customer_phone' => $data['customer_phone'],
                 'customer_address' => $data['customer_address'] ?? null,
-                'branch_id'        => $branch->id,
-                'user_id'          => auth()->id(),
-                'source'           => $data['source'],
-                'subtotal'         => $subtotal,
-                'tax'              => $tax,
-                'shipping'         => $data['shipping'] ?? 0,
-                'discount'         => $data['discount'] ?? 0,
-                'total'            => $total,
-                'payment_method'   => $data['payment_method'] ?? 'cash',
-                'notes'            => $data['notes'] ?? null,
-                'status'           => 'new',
-                'payment_status'   => 'paid',
+                'branch_id' => $branch->id,
+                'user_id' => auth()->id(),
+                'source' => $data['source'],
+                'subtotal' => $subtotal,
+                'tax' => $tax,
+                'shipping' => $data['shipping'] ?? 0,
+                'discount' => $data['discount'] ?? 0,
+                'total' => $total,
+                'payment_method' => $data['payment_method'] ?? 'cash',
+                'notes' => $data['notes'] ?? null,
+                'status' => 'new',
+                'payment_status' => 'paid',
             ]);
 
             foreach ($lineItems as $item) {
                 $orderItem = $order->items()->create([
-                    'product_id'     => $item['product_id'],
-                    'quantity'       => $item['quantity'],
-                    'price_at_sale'  => $item['price'],
-                    'total'          => $item['total'],
+                    'product_id' => $item['product_id'],
+                    'quantity' => $item['quantity'],
+                    'price_at_sale' => $item['price'],
+                    'total' => $item['total'],
                 ]);
 
                 foreach ($item['batches'] as $alloc) {
@@ -120,14 +119,14 @@ class OrderController extends Controller
                     $batch->decrement('quantity', $alloc['quantity']);
 
                     StockMovement::create([
-                        'product_id'   => $item['product_id'],
-                        'batch_id'     => $batch->id,
+                        'product_id' => $item['product_id'],
+                        'batch_id' => $batch->id,
                         'warehouse_id' => $warehouse->id,
-                        'type'         => 'out',
-                        'quantity'     => $alloc['quantity'],
-                        'reason'       => "بيع طلب #{$order->order_number}",
-                        'order_id'     => $order->id,
-                        'user_id'      => auth()->id(),
+                        'type' => 'out',
+                        'quantity' => $alloc['quantity'],
+                        'reason' => "بيع طلب #{$order->order_number}",
+                        'order_id' => $order->id,
+                        'user_id' => auth()->id(),
                     ]);
                 }
             }
@@ -146,11 +145,11 @@ class OrderController extends Controller
             $commission = $total * ($rate / 100);
             $order->update(['commission_amount' => $commission]);
             Commission::create([
-                'user_id'          => auth()->id(),
-                'order_id'         => $order->id,
-                'commission_rate'  => $rate,
-                'commission_amount'=> $commission,
-                'date'             => now()->format('Y-m-d'),
+                'user_id' => auth()->id(),
+                'order_id' => $order->id,
+                'commission_rate' => $rate,
+                'commission_amount' => $commission,
+                'date' => now()->format('Y-m-d'),
             ]);
 
             $this->logActivity('order_created', "طلب جديد {$order->order_number} - {$data['source']}");
@@ -164,7 +163,8 @@ class OrderController extends Controller
     {
         $allocated = [];
         foreach ($batches as $batch) {
-            if ($needed <= 0) break;
+            if ($needed <= 0)
+                break;
             $take = min($batch->quantity, $needed);
             $allocated[] = ['batch_id' => $batch->id, 'quantity' => $take];
             $needed -= $take;
@@ -177,9 +177,9 @@ class OrderController extends Controller
         $customer = Customer::where('phone', $data['customer_phone'])->first();
         if (!$customer) {
             $customer = Customer::create([
-                'name'    => $data['customer_name'],
-                'phone'   => $data['customer_phone'],
-                'email'   => $data['customer_email'] ?? null,
+                'name' => $data['customer_name'],
+                'phone' => $data['customer_phone'],
+                'email' => $data['customer_email'] ?? null,
                 'address' => $data['customer_address'] ?? null,
                 'is_active' => true,
             ]);
@@ -213,5 +213,23 @@ class OrderController extends Controller
             $order->update(['delivered_at' => now(), 'payment_status' => 'paid']);
         }
         return back()->with('toast', ['type' => 'success', 'message' => 'تم تحديث الحالة']);
+    }
+
+    public function commissionsReport(Request $request)
+    {
+        $month = $request->get('month', now()->format('Y-m'));
+
+        [$year, $monthNum] = explode('-', $month);
+
+        $commissions = Commission::with(['user', 'order'])
+            ->whereYear('date', $year)
+            ->whereMonth('date', $monthNum)
+            ->orderByDesc('commission_amount')
+            ->get()
+            ->groupBy('user_id');
+
+        $totalCommission = $commissions->sum(fn($group) => $group->sum('commission_amount'));
+
+        return view('dashboard.commissions.report', compact('commissions', 'totalCommission', 'month'));
     }
 }
